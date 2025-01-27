@@ -60,12 +60,10 @@ export default function Dashboard() {
     };
 
     fetchDashboardData();
-    // Refresh data every 5 minutes
     const interval = setInterval(fetchDashboardData, 300000);
     return () => clearInterval(interval);
   }, []);
 
-  // Helper function to generate test trend data
   const generateTestTrend = (testCases) => {
     const last7Days = Array.from({length: 7}, (_, i) => {
       const date = new Date();

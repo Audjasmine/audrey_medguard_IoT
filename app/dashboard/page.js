@@ -81,7 +81,6 @@ export default function Dashboard() {
     }));
   };
 
-  // Helper function to generate vulnerability trend data
   const generateVulnerabilityTrend = (vulnerabilities) => {
     const last7Days = Array.from({length: 7}, (_, i) => {
       const date = new Date();

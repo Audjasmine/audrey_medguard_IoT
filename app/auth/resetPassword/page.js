@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import {
     Card,
@@ -14,21 +14,20 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 
-export default function ResetPassword() {
+// Separate component to handle search params
+function ResetPasswordForm() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [verified, setVerified] = useState(false);
     const [user, setUser] = useState(null);
 
-
     const searchParams = useSearchParams();
     const router = useRouter();
     const token = searchParams.get('token');
 
-    const verifyToken = async () => {
+    const verifyToken = useCallback(async () => {
         try {
             const response = await fetch('/api/verifyToken', {
                 method: 'POST',
@@ -42,21 +41,23 @@ export default function ResetPassword() {
                 throw new Error('Failed to verify token');
             }
 
+            const data = await response.json();
             setVerified(true);
-            setUser(response.data.user);
+            setUser(data.user);
         } catch (error) {
             console.error('Error verifying token:', error);
             toast.error('Failed to verify token');
+            router.push('/auth/forgotPassword');
         }
-    };
+    }, [token, router]);
 
-    // useEffect(() => {
-    //     if (token) {
-    //         verifyToken();
-    //     } else {
-    //         router.push('/auth/forgotPassword');
-    //     }
-    // }, [token]);
+    useEffect(() => {
+        if (token) {
+            verifyToken();
+        } else {
+            router.push('/auth/forgotPassword');
+        }
+    }, [token, router, verifyToken]);
 
     if (!verified) {
         return (
@@ -151,5 +152,25 @@ export default function ResetPassword() {
                 </CardContent>
             </Card>
         </div>
+    );
+}
+
+// Main component wrapped with Suspense
+export default function ResetPassword() {
+    return (
+        <Suspense fallback={
+            <div className="flex min-h-screen items-center justify-center">
+                <Card className="w-[400px]">
+                    <CardHeader>
+                        <CardTitle>Loading...</CardTitle>
+                        <CardDescription>
+                            Please wait while we load the form...
+                        </CardDescription>
+                    </CardHeader>
+                </Card>
+            </div>
+        }>
+            <ResetPasswordForm />
+        </Suspense>
     );
 }

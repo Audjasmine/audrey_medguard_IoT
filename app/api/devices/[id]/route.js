@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import Device from '@/models/device';
-import connect from '@/utils/connect';
+import dbConnect from '@/lib/dbConnect';
 
 export async function GET(request, { params }) {
   try {
-    await connect();
+    await dbConnect();
     const device = await Device.findById(params.id);
     if (!device) {
       return NextResponse.json({ error: 'Device not found' }, { status: 404 });
@@ -17,7 +17,7 @@ export async function GET(request, { params }) {
 
 export async function PUT(request, { params }) {
   try {
-    await connect();
+    await dbConnect();
     const data = await request.json();
     const device = await Device.findByIdAndUpdate(params.id, data, { new: true });
     if (!device) {
@@ -31,7 +31,7 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
   try {
-    await connect();
+    await dbConnect();
     const device = await Device.findByIdAndDelete(params.id);
     if (!device) {
       return NextResponse.json({ error: 'Device not found' }, { status: 404 });

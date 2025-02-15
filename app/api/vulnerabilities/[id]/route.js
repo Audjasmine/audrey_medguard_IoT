@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import Vulnerability from '@/models/vulnerabilities';
+import Vulnerability from '@/models/vulnerability';
 import dbConnect from '@/lib/dbConnect';
 
 // GET /api/vulnerabilities/[id] - Get vulnerability details

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { connect } from '@/utils/connect';
 import Device from '@/models/device';
 import TestCase from '@/models/testCase';
-import Vulnerability from '@/models/vulnerabilities';
+import Vulnerability from '@/models/vulnerability';
 import TestResult from '@/models/testResult';
 
 // GET /api/devices/[id]/related - Get all related data for a device

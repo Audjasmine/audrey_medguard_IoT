@@ -25,6 +25,39 @@ export async function GET(request, context) {
   }
 }
 
+// Helper functions for randomization
+function getRandomElement(array) {
+  return array[Math.floor(Math.random() * array.length)];
+}
+
+function generateRandomDescription() {
+  const vulnerabilityTypes = [
+    'authentication bypass',
+    'weak encryption',
+    'unauthorized access',
+    'misconfiguration',
+    'default credentials',
+    'exposed sensitive data',
+    'insecure communication',
+    'firmware vulnerability',
+    'outdated software version',
+    'missing security controls'
+  ];
+  
+  const components = [
+    'login system',
+    'data storage',
+    'network communication',
+    'firmware',
+    'configuration settings',
+    'access control system',
+    'update mechanism',
+    'authentication module'
+  ];
+  
+  return `${getRandomElement(vulnerabilityTypes)} detected in ${getRandomElement(components)}`;
+}
+
 // PUT /api/testcases/[id] - Update test case
 export async function PUT(request, { params }) {
   try {
@@ -71,30 +104,34 @@ export async function PUT(request, { params }) {
       // Generate a unique vulnId first
       const vulnId = `VULN-${testCase._id}-${uuidv4()}`;
 
-      // Create single vulnerability with the pre-generated vulnId
+      // Random vulnerability type and severity
+      const types = ['authentication', 'encryption', 'access_control', 'configuration', 'security_configuration'];
+      const severities = ['low', 'medium', 'high'];
+
+      // Create single vulnerability with random attributes
       const vulnerability = await Vulnerability.create({
+        vulnId: vulnId,
         testId: testCase._id,
         deviceId: testCase.deviceId,
-        type: "security_configuration",
-        severity: "high",
+        type: getRandomElement(types),
+        severity: getRandomElement(severities),
         status: "open",
-        description: "Weak authentication mechanism detected",
+        description: generateRandomDescription(),
         discoveredAt: new Date(),
-        cvssScore: 8.5,
+        cvssScore: Math.floor(Math.random() * 10) + 1, // Random score between 1-10
         affectedComponents: [testCase.deviceType],
         remediationSteps: [
           "Review security configuration",
           "Apply security patches",
           "Implement security best practices",
         ],
-        vulnId: vulnId, // Use the pre-generated vulnId
       });
 
       // Update test result with findings
       testResult.status = "completed";
       testResult.endTime = new Date();
       testResult.results = {
-        passed: false, // Always failed since we're creating a vulnerability
+        passed: false,
         findings: [
           {
             type: vulnerability.type,
@@ -111,7 +148,7 @@ export async function PUT(request, { params }) {
       await testResult.save();
 
       // Update test case status
-      testCase.status = "failed"; // Always failed since we're creating a vulnerability
+      testCase.status = "failed";
       await testCase.save();
 
       return NextResponse.json({

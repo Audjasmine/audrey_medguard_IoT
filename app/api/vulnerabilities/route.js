@@ -1,39 +1,42 @@
-import { NextResponse } from 'next/server';
-import Vulnerability from '@/models/vulnerabilities';
-import dbConnect from '@/lib/dbConnect';
+import { NextResponse } from "next/server";
+import Vulnerability from "@/models/vulnerability";
+import dbConnect from "@/lib/dbConnect";
 
 // GET /api/vulnerabilities - List all vulnerabilities
 export async function GET(request) {
   try {
     await dbConnect();
-    
+
     let query = {};
-    
+
     // Only add filters if the URL has search params
-    if (request.url.includes('?')) {
+    if (request.url.includes("?")) {
       const { searchParams } = new URL(request.url);
-      const severity = searchParams.get('severity');
-      const status = searchParams.get('status');
-      const deviceId = searchParams.get('deviceId');
-      
+      const severity = searchParams.get("severity");
+      const status = searchParams.get("status");
+      const deviceId = searchParams.get("deviceId");
+
       if (severity) query.severity = severity;
       if (status) query.status = status;
       if (deviceId) query.deviceId = deviceId;
     }
-    
+
     const vulnerabilities = await Vulnerability.find(query)
       .sort({ severity: -1, discoveredAt: -1 })
-      .populate('deviceId', 'name type status')
-      .populate('testId', 'title category')
+      .populate("deviceId", "name type status")
+      .populate("testId", "title category")
       .exec();
-      
+
     return NextResponse.json(vulnerabilities);
   } catch (error) {
-    console.error('Error fetching vulnerabilities:', error);
-    return NextResponse.json({ 
-      error: error.message,
-      details: error.stack
-    }, { status: 500 });
+    console.error("Error fetching vulnerabilities:", error);
+    return NextResponse.json(
+      {
+        error: error.message,
+        details: error.stack,
+      },
+      { status: 500 }
+    );
   }
 }
 
@@ -46,10 +49,13 @@ export async function POST(request) {
     const vulnerability = await Vulnerability.create(data);
     return NextResponse.json(vulnerability, { status: 201 });
   } catch (error) {
-    console.error('Error creating vulnerability:', error);
-    return NextResponse.json({ 
-      error: error.message,
-      details: error.stack
-    }, { status: 500 });
+    console.error("Error creating vulnerability:", error);
+    return NextResponse.json(
+      {
+        error: error.message,
+        details: error.stack,
+      },
+      { status: 500 }
+    );
   }
 }

@@ -1,9 +1,9 @@
-import { NextResponse } from 'next/server';
-import Device from '@/models/device';
-import TestCase from '@/models/testCase';
-import Vulnerability from '@/models/vulnerabilities';
-import TestResult from '@/models/testResult';
-import { connect } from '@/utils/connect';
+import { NextResponse } from "next/server";
+import Device from "@/models/device";
+import TestCase from "@/models/testCase";
+import Vulnerability from "@/models/vulnerability";
+import TestResult from "@/models/testResult";
+import { connect } from "@/utils/connect";
 
 export async function GET() {
   try {
@@ -11,7 +11,7 @@ export async function GET() {
     const devices = await Device.find({}).sort({ createdAt: -1 });
     return NextResponse.json(devices);
   } catch (error) {
-    console.error('Error fetching devices:', error);
+    console.error("Error fetching devices:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
@@ -20,7 +20,7 @@ export async function POST(request) {
   try {
     await connect();
     const data = await request.json();
-    
+
     // Create the device
     const device = await Device.create(data);
 
@@ -28,11 +28,14 @@ export async function POST(request) {
     const testCases = await TestCase.find({ deviceType: device.type });
 
     if (!testCases.length) {
-      console.warn('No test cases found for device type:', device.type);
-      return NextResponse.json({ 
-        device,
-        warning: 'No test cases found for this device type'
-      }, { status: 201 });
+      console.warn("No test cases found for device type:", device.type);
+      return NextResponse.json(
+        {
+          device,
+          warning: "No test cases found for this device type",
+        },
+        { status: 201 }
+      );
     }
 
     // Arrays to store created records
@@ -42,20 +45,20 @@ export async function POST(request) {
     // Common vulnerability types for IoT health devices
     const vulnerabilityTypes = [
       {
-        type: 'authentication',
-        severity: 'high',
-        description: 'Potential authentication bypass in device access control'
+        type: "authentication",
+        severity: "high",
+        description: "Potential authentication bypass in device access control",
       },
       {
-        type: 'encryption',
-        severity: 'critical',
-        description: 'Weak encryption in data transmission'
+        type: "encryption",
+        severity: "critical",
+        description: "Weak encryption in data transmission",
       },
       {
-        type: 'data_exposure',
-        severity: 'high',
-        description: 'Sensitive health data exposure risk'
-      }
+        type: "data_exposure",
+        severity: "high",
+        description: "Sensitive health data exposure risk",
+      },
     ];
 
     // Create vulnerabilities (2-3 random ones)
@@ -68,11 +71,24 @@ export async function POST(request) {
         deviceId: device._id,
         type: vulnType.type,
         severity: vulnType.severity,
-        cvssScore: vulnType.severity === 'critical' ? 9.0 : 7.0,
+        cvssScore:
+          vulnType.severity === "high"
+            ? 8.5
+            : vulnType.severity === "medium"
+            ? 5.5
+            : 3.5,
         description: `${vulnType.description} for ${device.name}`,
-        status: 'open',
+        status: "open",
         discoveredAt: new Date(),
-        affectedComponents: [device.type]
+        affectedComponents: [device.type],
+        remediationSteps: [
+          "Review security configuration",
+          "Apply security patches",
+          "Implement security best practices",
+        ],
+        vulnId: `VULN-${testCases[i % testCases.length]._id}-${Date.now()}-${
+          i + 1
+        }`, // ADD UNIQUE ID
       });
       vulnerabilities.push(vulnerability);
     }
@@ -86,53 +102,65 @@ export async function POST(request) {
         deviceId: device._id,
         startTime: new Date(),
         endTime: new Date(Date.now() + testCase.estimatedDuration * 60000),
-        status: 'completed',
-        result: isFailure ? 'fail' : 'pass',
-        findings: isFailure ? [{
-          type: 'security',
-          severity: 'high',
-          description: `Security test failed: potential vulnerability detected in ${device.name}`,
-          timestamp: new Date()
-        }] : [],
+        status: "completed",
+        result: isFailure ? "fail" : "pass",
+        findings: isFailure
+          ? [
+              {
+                type: "security",
+                severity: "high",
+                description: `Security test failed: potential vulnerability detected in ${device.name}`,
+                timestamp: new Date(),
+              },
+            ]
+          : [],
         metrics: {
           responseTime: Math.random() * 1000,
           memoryUsage: Math.random() * 100,
           cpuUsage: Math.random() * 100,
-          networkLatency: Math.random() * 200
+          networkLatency: Math.random() * 200,
         },
         environment: {
-          firmwareVersion: device.firmware?.version || '1.0.0',
-          osVersion: 'IoT-OS 2.0',
-          networkType: 'Secure-IoT-Network'
+          firmwareVersion: device.firmware?.version || "1.0.0",
+          osVersion: "IoT-OS 2.0",
+          networkType: "Secure-IoT-Network",
         },
-        executor: 'automated-security-suite',
+        executor: "automated-security-suite",
         logs: [
           {
             timestamp: new Date(),
-            level: 'info',
-            message: `Executed security test: ${testCase.title}`
+            level: "info",
+            message: `Executed security test: ${testCase.title}`,
           },
           {
             timestamp: new Date(),
-            level: isFailure ? 'error' : 'info',
-            message: isFailure ? 'Test failed: security checks did not pass' : 'Test passed successfully'
-          }
-        ]
+            level: isFailure ? "error" : "info",
+            message: isFailure
+              ? "Test failed: security checks did not pass"
+              : "Test passed successfully",
+          },
+        ],
       });
       testResults.push(testResult);
     }
 
-    return NextResponse.json({
-      device,
-      vulnerabilities,
-      testResults,
-      message: `Created device with ${vulnerabilities.length} vulnerabilities and ${testResults.length} test results`
-    }, { status: 201 });
+    return NextResponse.json(
+      {
+        device,
+        vulnerabilities,
+        testResults,
+        message: `Created device with ${vulnerabilities.length} vulnerabilities and ${testResults.length} test results`,
+      },
+      { status: 201 }
+    );
   } catch (error) {
-    console.error('Error creating device and related records:', error);
-    return NextResponse.json({ 
-      error: error.message,
-      details: error.stack
-    }, { status: 500 });
+    console.error("Error creating device and related records:", error);
+    return NextResponse.json(
+      {
+        error: error.message,
+        details: error.stack,
+      },
+      { status: 500 }
+    );
   }
 }

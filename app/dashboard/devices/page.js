@@ -1,16 +1,16 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { 
+import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow 
+  TableRow,
 } from "@/components/ui/table";
 import {
   Dialog,
@@ -21,7 +21,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { 
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -44,29 +44,29 @@ export default function DevicesPage() {
     status: "inactive",
     firmware: {
       version: "",
-      lastUpdate: new Date()
+      lastUpdate: new Date(),
     },
-    location: { 
-      ward: "", 
-      room: "" 
+    location: {
+      ward: "",
+      room: "",
     },
     lastMaintenance: new Date(),
-    metadata: {}
+    metadata: {},
   });
 
   const fetchDevices = async () => {
     try {
       setIsRefreshing(true);
-      const res = await fetch('/api/devices', {
-        cache: 'no-store'
+      const res = await fetch("/api/devices", {
+        cache: "no-store",
       });
       if (!res.ok) {
-        throw new Error('Failed to fetch devices');
+        throw new Error("Failed to fetch devices");
       }
       const data = await res.json();
       setDevices(data);
     } catch (error) {
-      console.error('Error fetching devices:', error);
+      console.error("Error fetching devices:", error);
     } finally {
       setLoading(false);
       setIsRefreshing(false);
@@ -84,13 +84,13 @@ export default function DevicesPage() {
       const randomStr = Math.random().toString(36).substring(2, 8);
       const deviceData = {
         ...newDevice,
-        deviceId: newDevice.deviceId || `DEV-${timestamp}-${randomStr}`
+        deviceId: newDevice.deviceId || `DEV-${timestamp}-${randomStr}`,
       };
 
-      const res = await fetch('/api/devices', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(deviceData)
+      const res = await fetch("/api/devices", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(deviceData),
       });
 
       if (res.ok) {
@@ -103,29 +103,30 @@ export default function DevicesPage() {
           status: "inactive",
           firmware: {
             version: "",
-            lastUpdate: new Date()
+            lastUpdate: new Date(),
           },
-          location: { 
-            ward: "", 
-            room: "" 
+          location: {
+            ward: "",
+            room: "",
           },
           lastMaintenance: new Date(),
-          metadata: {}
+          metadata: {},
         });
         fetchDevices();
       } else {
         const error = await res.json();
-        console.error('Error response:', error);
+        console.error("Error response:", error);
       }
     } catch (error) {
-      console.error('Error adding device:', error);
+      console.error("Error adding device:", error);
     }
   };
 
-  const filteredDevices = devices.filter(device =>
-    device.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    device.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    device.description.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredDevices = devices.filter(
+    (device) =>
+      device.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      device.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      device.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const getStatusColor = (status) => {
@@ -133,7 +134,7 @@ export default function DevicesPage() {
       active: "text-green-500",
       inactive: "text-gray-500",
       maintenance: "text-yellow-500",
-      error: "text-red-500"
+      error: "text-red-500",
     };
     return colors[status] || "text-gray-500";
   };
@@ -152,12 +153,11 @@ export default function DevicesPage() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <Button 
-            onClick={() => fetchDevices()} 
-            disabled={isRefreshing}
-          >
-            <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-            {isRefreshing ? 'Refreshing...' : 'Refresh'}
+          <Button onClick={() => fetchDevices()} disabled={isRefreshing}>
+            <RefreshCw
+              className={`h-4 w-4 mr-2 ${isRefreshing ? "animate-spin" : ""}`}
+            />
+            {isRefreshing ? "Refreshing..." : "Refresh"}
           </Button>
           <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
             <DialogTrigger asChild>
@@ -178,7 +178,9 @@ export default function DevicesPage() {
                   <label>Name</label>
                   <Input
                     value={newDevice.name}
-                    onChange={(e) => setNewDevice({...newDevice, name: e.target.value})}
+                    onChange={(e) =>
+                      setNewDevice({ ...newDevice, name: e.target.value })
+                    }
                     placeholder="Device name"
                     required
                   />
@@ -187,7 +189,9 @@ export default function DevicesPage() {
                   <label>Type</label>
                   <Select
                     value={newDevice.type}
-                    onValueChange={(value) => setNewDevice({...newDevice, type: value})}
+                    onValueChange={(value) =>
+                      setNewDevice({ ...newDevice, type: value })
+                    }
                     required
                   >
                     <SelectTrigger>
@@ -206,7 +210,12 @@ export default function DevicesPage() {
                   <label>Description</label>
                   <Input
                     value={newDevice.description}
-                    onChange={(e) => setNewDevice({...newDevice, description: e.target.value})}
+                    onChange={(e) =>
+                      setNewDevice({
+                        ...newDevice,
+                        description: e.target.value,
+                      })
+                    }
                     placeholder="Device description"
                     required
                   />
@@ -215,7 +224,9 @@ export default function DevicesPage() {
                   <label>Status</label>
                   <Select
                     value={newDevice.status}
-                    onValueChange={(value) => setNewDevice({...newDevice, status: value})}
+                    onValueChange={(value) =>
+                      setNewDevice({ ...newDevice, status: value })
+                    }
                     required
                   >
                     <SelectTrigger>
@@ -233,19 +244,29 @@ export default function DevicesPage() {
                   <label>Firmware Version</label>
                   <Input
                     value={newDevice.firmware.version}
-                    onChange={(e) => setNewDevice({
-                      ...newDevice,
-                      firmware: {...newDevice.firmware, version: e.target.value}
-                    })}
+                    onChange={(e) =>
+                      setNewDevice({
+                        ...newDevice,
+                        firmware: {
+                          ...newDevice.firmware,
+                          version: e.target.value,
+                        },
+                      })
+                    }
                     placeholder="e.g., 1.0.0"
                   />
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={() => setShowAddDialog(false)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowAddDialog(false)}
+                >
                   Cancel
                 </Button>
-                <Button onClick={handleAddDevice}>Add Device</Button>
+                <Button onClick={handleAddDevice}>
+                  Add Device And Sync To Blockchain
+                </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -268,11 +289,15 @@ export default function DevicesPage() {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center">Loading...</TableCell>
+                  <TableCell colSpan={6} className="text-center">
+                    Loading...
+                  </TableCell>
                 </TableRow>
               ) : filteredDevices.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center">No devices found</TableCell>
+                  <TableCell colSpan={6} className="text-center">
+                    No devices found
+                  </TableCell>
                 </TableRow>
               ) : (
                 filteredDevices.map((device) => (
@@ -288,9 +313,7 @@ export default function DevicesPage() {
                     <TableCell>
                       {new Date(device.lastMaintenance).toLocaleDateString()}
                     </TableCell>
-                    <TableCell>
-                      {device.firmware?.version || 'N/A'}
-                    </TableCell>
+                    <TableCell>{device.firmware?.version || "N/A"}</TableCell>
                   </TableRow>
                 ))
               )}

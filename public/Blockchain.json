@@ -1,0 +1,107 @@
+[
+    {
+        "firmware": {
+            "version": "1.0.0",
+            "lastUpdate": "2025-03-03T06:49:39.688Z"
+        },
+        "location": {
+            "ward": "",
+            "room": ""
+        },
+        "_id": "67c5527bf2505d29c8e5424e",
+        "deviceId": "DEV-1740984955268-6opo3s",
+        "name": "three",
+        "type": "monitor",
+        "description": "three",
+        "status": "active",
+        "lastMaintenance": "2025-03-03T06:49:39.688Z",
+        "metadata": {},
+        "createdAt": "2025-03-03T06:55:55.371Z",
+        "updatedAt": "2025-03-03T06:55:55.371Z",
+        "__v": 0
+    },
+    {
+        "firmware": {
+            "version": "1.0.2",
+            "lastUpdate": "2025-03-03T06:49:11.632Z"
+        },
+        "location": {
+            "ward": "",
+            "room": ""
+        },
+        "_id": "67c55102f2505d29c8e5424a",
+        "deviceId": "DEV-1740984578090-cpyjjf",
+        "name": "meek",
+        "type": "monitor",
+        "description": "meek",
+        "status": "active",
+        "lastMaintenance": "2025-03-03T06:49:11.632Z",
+        "metadata": {},
+        "createdAt": "2025-03-03T06:49:38.165Z",
+        "updatedAt": "2025-03-03T06:49:38.165Z",
+        "__v": 0
+    },
+    {
+        "firmware": {
+            "version": "1.0.0",
+            "lastUpdate": "2025-03-03T06:42:25.878Z"
+        },
+        "location": {
+            "ward": "",
+            "room": ""
+        },
+        "_id": "67c54fe4f2505d29c8e54242",
+        "deviceId": "DEV-1740984292505-kbedpt",
+        "name": "y",
+        "type": "sensor",
+        "description": "y",
+        "status": "active",
+        "lastMaintenance": "2025-03-03T06:42:25.878Z",
+        "metadata": {},
+        "createdAt": "2025-03-03T06:44:52.619Z",
+        "updatedAt": "2025-03-03T06:44:52.619Z",
+        "__v": 0
+    },
+    {
+        "firmware": {
+            "version": "1.0.0",
+            "lastUpdate": "2025-03-03T06:40:33.748Z"
+        },
+        "location": {
+            "ward": "",
+            "room": ""
+        },
+        "_id": "67c54f50f2505d29c8e5423e",
+        "deviceId": "DEV-1740984144563-b956yp",
+        "name": "one",
+        "type": "monitor",
+        "description": "three",
+        "status": "inactive",
+        "lastMaintenance": "2025-03-03T06:40:33.748Z",
+        "metadata": {},
+        "createdAt": "2025-03-03T06:42:24.624Z",
+        "updatedAt": "2025-03-03T06:42:24.624Z",
+        "__v": 0
+    },
+    {
+        "firmware": {
+            "version": "1.0",
+            "lastUpdate": "2025-02-16T16:16:18.337Z"
+        },
+        "location": {
+            "ward": "",
+            "room": ""
+        },
+        "_id": "67b20fc4347c1761264c281b",
+        "deviceId": "DEV-1739722691506-ku1lyi",
+        "name": "Smartwatch",
+        "type": "wearable",
+        "description": " Awrist worn device that tracks health metrics like heart rate ,steps and blood oxygen levels ",
+        "status": "active",
+        "lastMaintenance": "2025-02-16T16:16:18.337Z",
+        "metadata": {},
+        "createdAt": "2025-02-16T16:18:12.345Z",
+        "updatedAt": "2025-02-16T16:18:12.345Z",
+        "__v": 0
+    }
+]=
